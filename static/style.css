@@ -1,0 +1,158 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,300);
+
+:root{
+    
+    --dark-color-lightness: 17%;
+    /* --light-color-lightness: 95%; */
+    --light-color-lightness: 75%;
+    --white-color-lightness: 99%;
+
+    --color-white: hsl(255, 30%, var(--white-color-lightness));
+    /* --color-light: hsl(0, 100%, var(--light-color-lightness)); */
+    /* --color-light: hsl(252, 30%, var(--light-color-lightness)); */
+    --color-light: hsl(255, 30%, var(--white-color-lightness));
+    --color-dark: rgba(16, 16, 16, 0.939);
+    --color-less-light: hsla(0, 0%, 100%, 0.917);
+    --picture-width: 180px;
+    --picture-height: 180px;
+    
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    display: -ms-flexbox;
+    display: -webkit-box;
+    -ms-flex-pack: center;
+    -webkit-box-pack: center;
+    /* justify-content: center; */
+    background-color: var(--color-less-light);
+    color: var(--color-dark);
+    text-align: center!important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100%;
+    /* background-color: hsl(0deg 0% 100% / 73%); */
+    font-family: (--bs-font-sans-serif);
+    /* border: 1px; */
+    /* border-radius: 40px; */
+    z-index: 1;
+    overflow-x: hidden;
+    font-family: 'Roboto';
+  }
+
+.page {
+    height: 100vh;
+    width: 100vw;
+    /* background: #f7f7f7; */
+}
+
+ul {
+    list-style-type: none;
+}
+
+
+.search-bar{
+    /* background-color: #f7f7f7; */
+    /* border: 4px solid black; */
+    border-radius: 20px;
+    background: #f1f1f1;
+}
+
+.search-bar input{font-size: 20px}
+.search-bar input:focus {outline:none;}
+.actions button{
+    /* background: var(--color-dark); */
+    /* color: var(--color-light); */
+    border: none;
+    background-color: transparent;
+    padding-left: 12px;
+    padding-right: 12px;
+    /* padding-top: 4px; */
+    /* padding-bottom: 4px; */
+    /* font-size: 1rem; */
+    /* text-transform: uppercase; */
+    /* border-radius: 16px; */
+}
+
+/* Container Style */
+.ml-style {
+    position: relative;
+    background-color: transparent; /* No background */
+    border: none;
+    color: #000; /* Black text */
+    font-size: 24px;
+    font-weight: 700;
+    /* text-transform: uppercase; */
+    cursor: pointer;
+    padding: 10px 30px;
+    transition: transform 0.3s ease-in-out; /* Smooth plump effect */
+    outline: none;
+}
+
+/* Top-right and bottom-left borders */
+.ml-style::before,
+.ml-style::after {
+    content: '';
+    position: absolute;
+    width: 20px; /* Border length */
+    height: 20px; /* Border thickness */
+    border: 3px solid #000; /* Thick black borders */
+    transition: all 0.3s ease-in-out; /* Smooth hover animation */
+}
+
+/* Top-right corner */
+.ml-style::before {
+    top: 0;
+    right: 0;
+    border-left: none;
+    border-bottom: none;
+}
+
+/* Bottom-left corner */
+.ml-style::after {
+    bottom: 0;
+    left: 0;
+    border-right: none;
+    border-top: none;
+}
+
+
+/* Header Fade-in */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px); /* Slight upward animation for a magical feel */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#fadeInHeader span {
+    display: inline-block; /* Ensure animation applies letter by letter */
+    opacity: 0; /* Initially invisible */
+}
+
+.story-text {
+    font-size: 22px;
+    color: #343336c6;
+    line-height: 1.6;
+    text-align: left;
+}
+
+#p2 .container {
+    height: 100%;
+}
+
+.bounce {
+    -moz-animation: bounce 4s infinite;
+    -webkit-animation: bounce 4s infinite;
+    animation: bounce 4s infinite;
+}
