@@ -3,6 +3,9 @@ playground.ipynb
 old/
 *.pdf
 
+# AWS key pairs
+*.pem
+
 # sqlite db
 *.db
 *.db-shm

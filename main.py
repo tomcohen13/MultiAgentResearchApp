@@ -20,8 +20,9 @@ from langgraph.checkpoint.mongodb.aio import AsyncMongoDBSaver
 from agents.agents import CoordinatorAgent
 from agents.constants import (
     DEFAULT_MAX_REVISIONS,
-    MONGO_COLLECTION_NAME,
+    MONGO_CHECKPOINTS_COLLECTION_NAME,
     MONGO_DB_NAME,
+    MONGO_WRITES_COLLECTION_NAME,
     NODE_TO_TEXT,
     TOPIC_NAMES_MAPPING,
 )
@@ -75,7 +76,8 @@ async def startup_event():
     mongo_checkpointer = AsyncMongoDBSaver(
         client,
         db_name=MONGO_DB_NAME,
-        checkpoint_collection_name=MONGO_COLLECTION_NAME,
+        checkpoint_collection_name=MONGO_CHECKPOINTS_COLLECTION_NAME,
+        writes_collection_name=MONGO_WRITES_COLLECTION_NAME,
     )
     print("AsyncMongoDBSaver initialized.")
 

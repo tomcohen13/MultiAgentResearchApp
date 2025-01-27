@@ -4,8 +4,9 @@ from typing import Mapping, Sequence
 
 DEFAULT_MAX_REVISIONS: int = 2
 
-MONGO_DB_NAME = "tavily"
-MONGO_COLLECTION_NAME = "agent_states"
+MONGO_DB_NAME = "checkpoints"
+MONGO_CHECKPOINTS_COLLECTION_NAME = "state_snapshots"
+MONGO_WRITES_COLLECTION_NAME = "state_snapshots_writes"
 
 BACKGROUND_INFO = "background"
 FINANCIAL_HEALTH = "financial_health"
