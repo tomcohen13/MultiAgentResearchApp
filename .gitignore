@@ -2,6 +2,7 @@
 playground.ipynb
 old/
 *.pdf
+requirements_full.txt
 
 # AWS key pairs
 *.pem

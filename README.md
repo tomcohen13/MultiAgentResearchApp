@@ -110,7 +110,7 @@ Access the app at `http://127.0.0.1:8000`.
 1. Once the application was created, click **Create new environment**
 2. **Environment tier**: select "Web server environment"
 3. **Application information**: should be auto-filled
-4. **Environment information**: select an environment name and a Domain (mine's ai-company-researcher.eu-north-1.elasticbeanstalk.com)
+4. **Environment information**: select an environment name and a Domain
 5. **Platform**:  
    - Platform type: Select "Managed platform" 
    - Platform: Select "Python"
@@ -163,8 +163,9 @@ Access the app at `http://127.0.0.1:8000`.
    3. Next!
 
 
-### 6. Configure updates, monitoring, and logging - optional:
-   - Email notifications: specify your email to get updates if anything crashes.
+### 6. Configure updates, monitoring, and logging:
+   1. I've added on my end Log Streaming using CloudWatch, but it's optional
+   2. Email notifications: specify your email to get updates if anything crashes.
 
 
 ### 7. Review and Submit!
@@ -223,8 +224,8 @@ app/
 
 
 ## Monitoring and Scaling
-
-- Use AWS CloudWatch to monitor metrics like CPU utilization and memory usage.
+- Using AWS CloudWatch to monitor logs
+- Use Beanstalk monitoring to keep track of CPU utilization
 - Adjust auto-scaling settings in the Elastic Beanstalk console as needed.
 
 
