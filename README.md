@@ -3,6 +3,9 @@
 ## Overview
 This project is a multi-agent web application that executes comprehensive company research based on user-specified criteria. The agents collaborate to research, synthesize, and aggregate relevant information on financial health, market position, recent news, and more to produce a final research report. The app was built using LangGraph and Tavily.
 
+![alt architecture](static/images/architecture.png "The Architecture")
+
+
 ## Main Points
 
 ### 1. **Multi-Agent Collaboration**
@@ -14,7 +17,6 @@ This project is a multi-agent web application that executes comprehensive compan
 - Checkpoints are stored in MongoDB using `AsyncMongoClient` and `AsyncMongoDBSaver`, ensuring efficient state recovery and monitoring.
 - Topic agents work in parallel to speed up research.
 - Events are streamed as they happen to the client for smoother UX.
-
 
 ### 3. **Scalability and Flexibility**
 - Configurable to support more topics.
