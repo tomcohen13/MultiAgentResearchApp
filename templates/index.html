@@ -3,33 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Help Me With My OCD</title>
+    <title>AI Company Research Assistant</title>
     <!-- Main CSS file -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <link href="{{ url_for('static', path='/style.css') }}" rel="stylesheet">
     <!-- Stopwatch script -->
-    <script src="{{ url_for('static',filename='dropdown.js') }}" defer></script>
-    <script src="{{ url_for('static',filename='header-fade.js') }}" defer></script>
+    <script src="{{ url_for('static',path='/header-fade.js') }}" defer></script>
+    <script src="{{ url_for('static',path='/script.js') }}" defer></script>
 </head>
 <body>
     <div class="page d-flex flex-column justify-content-center align-items-center" id="p1">
         <!-- <h2 style="top: 3%; position: absolute; color: rgba(0, 0, 0, 0.423)">AI Company Research Assistant</h2> -->
-        <div class="container ml-style h-75 d-flex flex-column align-items-center">
-            <div class="user-input d-flex flex-column align-items-center gap-3">
-                <h2 id="fadeInHeader"><label for="symptom">Which company would you like to research?</label></h2>
-                <div class="search-bar d-flex flex-row w-75 p-3">
-                    <i class="uil-search"></i>
-                    <input class="w-100" style="background: transparent; border: none" placeholder="type in a company name...">
-                    <div class="actions">
-                        <button id="startSessionBtn">🔍</button>
-                        <button id="stopSessionBtn" style="display: none;">Stop</button>
-                    </div>
+        <div class="container ml-style h-75 d-flex flex-column align-items-center gap-5">
+            <div class="user-input w-100 d-flex flex-column align-items-center gap-3">
+                <h2 id="fadeInHeader"><label for="user-input">Which company would you like to research?</label></h2>
+                <div class="search-bar d-flex flex-row w-100 p-3">
+                    <input name="company" id="userInput" class="w-100" maxlength="30" style="background: transparent; border: none" placeholder="type in a company name...">
+                    <button style="border: none" id="startResearch">Search</button>
                 </div>
-                <div class="criteria"></div>
-                <div class="draft"></div>
+                <div class="criteria">
+                    <button class="criterion"><input id="background" type="checkbox" class="check-criterion" checked>Background info ℹ️</button>
+                    <button class="criterion"><input id="financial_health" type="checkbox" class="check-criterion">Financial Health💰</button>
+                    <button class="criterion"><input id="market_position" type="checkbox" class="check-criterion">Market Position 📈</button>
+                    <button class="criterion"><input id="recent_news" type="checkbox" class="check-criterion">News 🗞️</button>
+                </div>
+            </div>
+            <div class="output h-100 overflow-hidden d-flex flex-row">
+                <div class="analysis-text px-5 h-100 d-flex flex-column gap-3" id="report">
+                    
+                </div>
             </div>
         </div>
     </div>

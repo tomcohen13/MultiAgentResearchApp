@@ -1,5 +1,6 @@
 # code
 playground.ipynb
+old/
 *.pdf
 
 # sqlite db
