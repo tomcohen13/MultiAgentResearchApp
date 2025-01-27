@@ -1,7 +1,7 @@
 # Multi-Agent Company Researcher
 
 ## Overview
-This project is a multi-agent web application, built with LangGraph and Tavily, that executes comprehensive company research based on user-specified criteria. The agents collaborate to research, synthesize, and aggregate relevant information like financial health, market position, recent news, and background information
+This project is a multi-agent web application that executes comprehensive company research based on user-specified criteria. The agents collaborate to research, synthesize, and aggregate relevant information on financial health, market position, recent news, and more to produce a final research report. The app was built using LangGraph and Tavily.
 
 ## Main Points
 
@@ -60,8 +60,8 @@ Access the app at `http://127.0.0.1:8000`.
 ![alt ui](static/images/ui-screenshot.png "The UI")
 
 1. Navigate to the web interface.
-2. Enter a **company name** and select desired research criteria from the topics below the search bar.
-3. Click **Start Research** to trigger the workflow.
+2. Enter a **company name** and select desired **research criteria** from the topics below the search bar.
+3. Hit **Search** to trigger the workflow.
 4. Watch as results stream in real-time on the page.
 
 
