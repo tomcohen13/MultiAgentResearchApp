@@ -1,5 +1,7 @@
 # Multi-Agent Company Researcher
 
+Link: http://company-researcher.us-east-1.elasticbeanstalk.com/
+
 ## Overview
 This project is a multi-agent web application that executes comprehensive company research based on user-specified criteria. The agents collaborate to research, synthesize, and aggregate relevant information on financial health, market position, recent news, and more to produce a final research report. The app was built using LangGraph and Tavily.
 
@@ -18,7 +20,8 @@ This project is a multi-agent web application that executes comprehensive compan
 ### 2. **Asynchronous Workflow & Streaming**
 - Checkpoints are stored in MongoDB using `AsyncMongoClient` and `AsyncMongoDBSaver`, ensuring state persistence.
 - Topic agents work in parallel to speed up research.
-- Events are streamed as they happen to the client for smoother UX.
+- Events up to the final state are streamed as they happen to the client for smoother UX;
+the final state is streamed by the token to the UI
 
 ### 3. **Scalability and Flexibility**
 - Configurable to support more topics.
@@ -83,7 +86,7 @@ Create a `.env` file in the project root and add the following:
 ```
 TAVILY_API_KEY=<your_tavily_api_key>
 OPENAI_API_KEY=<your_openai_api_key>
-MONGO_URI=mongodb://localhost:27017
+MONGO_URI=<your_mongodb_connection_string>
 ```
 
 ### 4. **Run the Application Locally**
@@ -95,7 +98,7 @@ or (if you're making edits)
 ```bash
 uvicorn main:app --reload
 ```
-Access the app at `http://127.0.0.1:8000`.
+Access the app at `http://0.0.0.0:8000`.
 
 
 ## Setup Instructions: Deploying to AWS BeanStalk
@@ -117,7 +120,7 @@ Access the app at `http://127.0.0.1:8000`.
    - Platform branch: I used Python 3.11 to match my local environment
    - Platform version: 4.3.2 (Recommended)
 6. Application code: for now select the "Sample application" and later we'll integrate a CICD pipeline with GitHub.
-7. Presets: Since the instructions state that the application should support multiple instances, I opted for "High availability (spot and on-demand instances)" to balance availability and cost.
+7. Presets: Since the instructions state that the application should support multiple instances, I opted for "High availability" and will later configure it balance availability and cost. In a real production application I might've chosen the 'High availability (spot and on-demand)' to reduce costs.
 8. Click "Next"
 
 ### 3. Configure service access
@@ -165,7 +168,7 @@ Access the app at `http://127.0.0.1:8000`.
 
 ### 6. Configure updates, monitoring, and logging:
    1. I've added on my end Log Streaming using CloudWatch, but it's optional
-   2. Email notifications: specify your email to get updates if anything crashes.
+   2. Email notifications: specify email
 
 
 ### 7. Review and Submit!
@@ -173,21 +176,26 @@ Access the app at `http://127.0.0.1:8000`.
    - Take a break or sth; that was exhausting 🥵
 
 ### 8. Configure CICD Pipeline with GitHub
-   1. Navigate to the CodePipeline console
-   2. Select Build custom pipeline and continue
+   1. Navigate to the CodePipeline console in AWS
+   2. Select Build custom pipeline
    3. Pipeline settings:
       - Name the pipeline
       - Execution mode: I selected "Superseded" for this project because it ensures that only the latest version of the application is deployed. For a single-developer, low-traffic project, this is the most resource-friendly option. In a production environment with more contributors or critical testing requirements, I'd consider Queued or Parallel modes.
    4. Add source
       - Connect to GitHub
       - Choose the relevant repository and branch (in my case MultiAgentResearchApp and 'develop')
-   5. Skip build stage given the project
-   6. Skip test stage given the project
+   5. Skipped build stage given the project
+   6. Skipped test stage given the project
    7. Deploy to EB
       - Choose Deploy provider AWS Elastic Beanstalk
       - Choose the region of your environment
       - select the application and its corresponding environment
    8. Deploy the pipeline!
+   9. If you've added CloudWatch log streaming, you might need to add CodePipeline the following permissions:
+      - go to IAM > Roles
+      - find the service role of the CodePipeline
+      - Permissions > attach policies
+      - CloudWatchLogsFullAccess (or a more restrictive policy)
  
 
 ## Usage
@@ -232,10 +240,11 @@ app/
 ## Future Enhancements
 - Improved error handling for robust performance.
 - Input validation.
-- Architecture improvements.
 - Enhanced visualizations of results.
 - Caching frequent queries
 - Human-in-the-loop or retrospective feedback 👍/👎
+- rate limiter
 
-## Thoughts & Disclaimer
+## Thoughts, Bugs, & Disclaimers
+- There's an occasional, production-only bug I'm encountering in Chrome that I haven't yet figured out -- the request is interrupted with `net::ERR_INCOMPLETE_CHUNKED_ENCODING`. If the app gets stuck at a certain stage, look for it in the Chrome console. If that's the case, just try rerunning. Hopefully I'll figure it out by the time you're reading this and you can forget all about it!
 - I initially hard-coded the architecture with the selected topics, adding designated subgraphs per user-specified topic. Although the graph as a whole was not too overwhelming for 4 topics, it didn't feel very elegant for a larger-scale application, so I resorted to having one TopicAgent architecture that gets replicated and run in parallel, ad-hoc, given the user-specified topics. This is similar to the GPT-Researcher implementation. The downside of that is that the nodes are named generically. Curious to hear your thoughts!
