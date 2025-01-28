@@ -2,6 +2,7 @@
 import os
 import time
 import secrets
+import asyncio
 
 import uvicorn
 from fastapi import FastAPI, Request
@@ -14,6 +15,7 @@ from fastapi.staticfiles import StaticFiles
 from pymongo import AsyncMongoClient
 from pymongo.server_api import ServerApi
 
+from langchain.callbacks.streaming_aiter import AsyncIteratorCallbackHandler
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.mongodb.aio import AsyncMongoDBSaver
 
@@ -89,7 +91,16 @@ def root(request: Request):
 
 @app.get("/research")
 async def research(request: Request):
+    """
+    When a user makes a GET request, passing in a company and search criteria,
+    the team of agents will initialize and begin streaming events back to the client.
+    Up until the final node, intermediate events will flash to the UI 
+    to update the user on the status of the task. Once the final step is reached,
+    the agent will stream its output token-by-token for better user experience.
 
+    Parameters
+        request: a get request send from the client with 'company' and 'criteria' params.
+    """
     company = request.query_params.get("company")
     criteria = request.query_params.get("criteria").split(";")
 
@@ -100,7 +111,11 @@ async def research(request: Request):
         task=company,
         task_id=task_id,
     )
-    graph = agent.workflow.compile(checkpointer=mongo_checkpointer)
+    # Early-stopping at "polish" which is the final node
+    graph = agent.workflow.compile(
+        checkpointer=mongo_checkpointer,
+        interrupt_before=["polish"],
+    )
     initial_input = {
         "company": company,
         "topics": criteria,
@@ -113,17 +128,24 @@ async def research(request: Request):
         async for event in graph.astream(input=initial_input, config=config, subgraphs=True):
             # get node name
             node = next(iter(event[1]))
-
-            # if last node -- yield report
-            if node == "polish":
-                yield event[1][node]["final_report"]
-                continue
             # yield a user-facing description of the current status
-            topic = event[1][node].get("topic", "")
-            yield NODE_TO_TEXT.get(node, node).format(
-                topic=TOPIC_NAMES_MAPPING.get(topic, "")
-            )
-    return StreamingResponse(stream_events(), media_type="text/event-stream")
+            try:
+                # stream a description of the current node
+                topic = event[1][node].get("topic", "")
+                topic_name = TOPIC_NAMES_MAPPING.get(topic, "")
+                status_description = NODE_TO_TEXT.get(node, node)
+                yield status_description.format(topic=topic_name)
+            except:
+                continue
+
+        # Switch to token-streaming using special token
+        yield "<REPORT_STREAM>"
+        # stream the final node of the graph
+        async for msg, metadata in graph.astream(input=None, config=config, stream_mode="messages"):
+            yield msg.content
+            await asyncio.sleep(0.05)
+    
+    return StreamingResponse(stream_events(), media_type="text/html")
 
 
 if __name__ == "__main__":
