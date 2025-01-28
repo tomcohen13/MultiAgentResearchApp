@@ -15,7 +15,6 @@ from fastapi.staticfiles import StaticFiles
 from pymongo import AsyncMongoClient
 from pymongo.server_api import ServerApi
 
-from langchain.callbacks.streaming_aiter import AsyncIteratorCallbackHandler
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.mongodb.aio import AsyncMongoDBSaver
 
