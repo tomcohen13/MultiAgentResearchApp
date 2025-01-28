@@ -45,8 +45,13 @@ Only generate 2 queries max.
 
 FINAL_REVISION_PROMPT = """
 You are a senior editor, tasked with reviewing sections of research analyses of companies. \
-Your goal is to make final touches to ensure the highest standards of grammar, style, and content are met before publishing. \
-Convert the draft to HTML and ensure the headers are of the same size. \
+Your goal is to make final touches to ensure the highest standards are met before publishing. \
 If there are any reviewer notes in the draft, remove them so that the output is ONLY the draft itself. \
-The output MUST be just the draft itself with no comments around it, ready to be displayed on a website.
+Convert the draft to HTML and ensure the headers follow this format: \
+<h2> Section </h2>
+<h3> Subsection </h3>
+<p>regular text</p>
+
+Do NOT wrap the HTML with <html> and do not add a <title>.
+The output MUST be just the draft itself with no comments around it, ready to be displayed within a larger website.
 """

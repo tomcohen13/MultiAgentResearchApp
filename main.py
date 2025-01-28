@@ -2,6 +2,7 @@
 import os
 import time
 import secrets
+import asyncio
 
 import uvicorn
 from fastapi import FastAPI, Request
@@ -14,6 +15,7 @@ from fastapi.staticfiles import StaticFiles
 from pymongo import AsyncMongoClient
 from pymongo.server_api import ServerApi
 
+from langchain.callbacks.streaming_aiter import AsyncIteratorCallbackHandler
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.mongodb.aio import AsyncMongoDBSaver
 
@@ -100,11 +102,11 @@ async def research(request: Request):
         task=company,
         task_id=task_id,
     )
-    graph = agent.workflow.compile(checkpointer=mongo_checkpointer)
+    graph = agent.workflow.compile(checkpointer=mongo_checkpointer, interrupt_before=["polish"])
     initial_input = {
         "company": company,
         "topics": criteria,
-        "max_drafts": DEFAULT_MAX_REVISIONS,
+        "max_drafts": 1,
     }
     config = {"configurable": {"thread_id": task_id}}
 
@@ -113,18 +115,23 @@ async def research(request: Request):
         async for event in graph.astream(input=initial_input, config=config, subgraphs=True):
             # get node name
             node = next(iter(event[1]))
-
-            # if last node -- yield report
-            if node == "polish":
-                yield event[1][node]["final_report"]
-                continue
             # yield a user-facing description of the current status
-            topic = event[1][node].get("topic", "")
-            yield NODE_TO_TEXT.get(node, node).format(
-                topic=TOPIC_NAMES_MAPPING.get(topic, "")
-            )
-    return StreamingResponse(stream_events(), media_type="text/event-stream")
+            try:
+                topic = event[1][node].get("topic", "")
+                yield NODE_TO_TEXT.get(node, node).format(topic=TOPIC_NAMES_MAPPING.get(topic, ""))
+            except:
+                continue
+        
+        # last_state = await mongo_checkpointer.aget_tuple(config)
+        yield "<REPORT_STREAM>"
+        async for msg, metadata in graph.astream(input=None, config=config, stream_mode="messages"):
+            yield msg.content
+            await asyncio.sleep(0.05)
+
+        # final_state = await graph.ainvoke(input=initial_input, config=config)        
+    
+    return StreamingResponse(stream_events(), media_type="text/html")
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=int(os.getenv("PORT", 8000)))
+    uvicorn.run(app, port=int(os.getenv("PORT", 8000)))

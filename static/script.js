@@ -13,21 +13,40 @@ document.getElementById('startResearch').addEventListener('click', async () => {
     // make a GET request to server
     criteriaString = searchCriteria.join(";")
     const response = await fetch(
-        '/research?' + new URLSearchParams({ company: userInput, criteria: criteriaString}).toString(), {}
+        '/research?' + new URLSearchParams({ company: userInput, criteria: criteriaString}).toString(), 
+        {
+            method: "GET",
+            headers: {"Content-Type": "text/html"},
+
+        }
     );
     // TextDecoder to decode chunks
     const decoder = new TextDecoder(); 
     const reader = response.body.getReader();
+    var streamingReport = false;
+    var output = ""
 
     while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
 
         // Decode and append the chunk
-        const chunk = decoder.decode(value, { stream: true });
+        const chunk = decoder.decode(value);
 
-        // Populate the report area
-        report.innerHTML = chunk; 
+        if (chunk == "<REPORT_STREAM>"){
+            console.log("streaming report...")
+            // clean screen
+            output = '';
+            // from now on add input 
+            streamingReport = true
+        }
+        else if (streamingReport == true){
+            output += chunk
+        }
+        else {
+            output = chunk
+        }
+        report.innerHTML = output
+        if (done) break;
     }
 
 });
