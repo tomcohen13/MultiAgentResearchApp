@@ -1,4 +1,4 @@
-# Multi-Agent Company Researcher
+# Multi-Agent Company Researcher (LangGraph + Tavily)
 
 Link: http://company-researcher.us-east-1.elasticbeanstalk.com/
 
